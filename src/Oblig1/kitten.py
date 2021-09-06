@@ -15,9 +15,8 @@ for line in lines[1:]:
         child = int(split[1 + i])
         myTree[child] = parent
 prev = kitten
-sys.stdout.write(str(kitten))
+sys.stdout.write(f"{prev} ")
 while myTree[prev] is not None:
     prev = myTree[prev]
-    sys.stdout.write(str(prev))
-
+    sys.stdout.write(f"{prev} ")
 
