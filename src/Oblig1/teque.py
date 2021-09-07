@@ -38,7 +38,7 @@ class Teque:
 
     def push_front(self, value: int):
         self._front.push_front(value)
-        if len(self._back) < len(self._front):
+        if len(self._back) < len(self._front) - 1:
             self._back.push_front(self._front.pop_back())
 
     def push_back(self, value: int):
