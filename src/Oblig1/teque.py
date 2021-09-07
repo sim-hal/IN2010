@@ -25,7 +25,7 @@ class Deque:
         return self._data[self._CAPACITY + 1 + self._push_backs]
 
     def __getitem__(self, key):
-        return self._data[self._CAPACITY - self._push_fronts + key + 1]  # test
+        return self._data[self._CAPACITY - self._push_fronts + key + 1]
 
     def __len__(self):
         return self._push_fronts + self._push_backs
@@ -38,11 +38,13 @@ class Teque:
 
     def push_front(self, value: int):
         self._front.push_front(value)
-        self._back.push_front(self._front.pop_back())
+        if len(self._back) < len(self._front):
+            self._back.push_front(self._front.pop_back())
 
     def push_back(self, value: int):
         self._back.push_back(value)
-        self._front.push_back(self._back.pop_front())
+        if len(self._front) < len(self._back):
+            self._front.push_back(self._back.pop_front())
 
     def push_middle(self, value: int):
         if len(self._back) < len(self._front):
