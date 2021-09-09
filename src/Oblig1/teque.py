@@ -4,29 +4,29 @@ import sys
 
 class Deque:
     def __init__(self, capacity: int):
-        self._half = (capacity + 2) // 2
+        self._CAPACITY = capacity
         self._push_backs: int = 0
         self._push_fronts: int = 0
-        self._data: List[Optional[int]] = [None] * (capacity+2)
+        self._data: List[Optional[int]] = [None] * (1+capacity*2)
 
     def push_front(self, value: int):
-        self._data[self._half - self._push_fronts] = value
+        self._data[self._CAPACITY - self._push_fronts] = value
         self._push_fronts += 1
 
     def push_back(self, value: int):
-        self._data[self._half + 1 + self._push_backs] = value
+        self._data[self._CAPACITY + 1 + self._push_backs] = value
         self._push_backs += 1
 
     def pop_front(self) -> int:
         self._push_fronts -= 1
-        return self._data[self._half - self._push_fronts]
+        return self._data[self._CAPACITY - self._push_fronts]
 
     def pop_back(self) -> int:
         self._push_backs -= 1
-        return self._data[self._half + 1 + self._push_backs]
+        return self._data[self._CAPACITY + 1 + self._push_backs]
 
     def __getitem__(self, key):
-        return self._data[self._half - self._push_fronts + key + 1]
+        return self._data[self._CAPACITY - self._push_fronts + key + 1]
 
     def __len__(self):
         return self._push_fronts + self._push_backs
