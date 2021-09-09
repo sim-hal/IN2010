@@ -4,10 +4,10 @@ import sys
 
 class Deque:
     def __init__(self, capacity: int):
-        self._half = capacity // 4
+        self._half = (capacity + 2) // 2
         self._push_backs: int = 0
         self._push_fronts: int = 0
-        self._data: List[Optional[int]] = [None] * ((capacity // 2) + 1)
+        self._data: List[Optional[int]] = [None] * (capacity+2)
 
     def push_front(self, value: int):
         self._data[self._half - self._push_fronts] = value
@@ -62,10 +62,11 @@ class Teque:
 
 
 if __name__ == "__main__":
-    lines = sys.stdin.readlines()
-    myTeque = Teque(int(lines[0]))
+    line = sys.stdin.readline()
+    myTeque = Teque(int(line))
 
-    for line in lines[1: ]:
+    for i in range(int(line)):
+        line = sys.stdin.readline()
         command, argument = line.split(" ")
         if command == "push_back":
             myTeque.push_back(int(argument))
