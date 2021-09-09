@@ -1,31 +1,32 @@
 from typing import Optional, List
 import sys
 
+
 class Deque:
     def __init__(self, capacity: int):
-        self._CAPACITY = capacity
+        self._half = capacity // 4
         self._push_backs: int = 0
         self._push_fronts: int = 0
-        self._data: List[Optional[int]] = [None] * self._CAPACITY * 2
+        self._data: List[Optional[int]] = [None] * ((capacity // 2) + 1)
 
     def push_front(self, value: int):
-        self._data[self._CAPACITY - self._push_fronts] = value
+        self._data[self._half - self._push_fronts] = value
         self._push_fronts += 1
 
     def push_back(self, value: int):
-        self._data[self._CAPACITY + 1 + self._push_backs] = value
+        self._data[self._half + 1 + self._push_backs] = value
         self._push_backs += 1
 
     def pop_front(self) -> int:
         self._push_fronts -= 1
-        return self._data[self._CAPACITY - self._push_fronts]
+        return self._data[self._half - self._push_fronts]
 
     def pop_back(self) -> int:
         self._push_backs -= 1
-        return self._data[self._CAPACITY + 1 + self._push_backs]
+        return self._data[self._half + 1 + self._push_backs]
 
     def __getitem__(self, key):
-        return self._data[self._CAPACITY - self._push_fronts + key + 1]
+        return self._data[self._half - self._push_fronts + key + 1]
 
     def __len__(self):
         return self._push_fronts + self._push_backs
@@ -63,6 +64,7 @@ class Teque:
 if __name__ == "__main__":
     lines = sys.stdin.readlines()
     myTeque = Teque(int(lines[0]))
+
     for line in lines[1: ]:
         command, argument = line.split(" ")
         if command == "push_back":
@@ -73,4 +75,5 @@ if __name__ == "__main__":
             myTeque.push_middle(int(argument))
         elif command == "get":
             sys.stdout.write(f"{myTeque[int(argument)]}\n")
+
 
