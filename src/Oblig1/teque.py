@@ -1,12 +1,13 @@
 from typing import Optional, List
 import sys
 
+
 class Deque:
     def __init__(self, capacity: int):
         self._CAPACITY = capacity
         self._push_backs: int = 0
         self._push_fronts: int = 0
-        self._data: List[Optional[int]] = [None] * self._CAPACITY * 2
+        self._data: List[Optional[int]] = [None] * (1+capacity*2)
 
     def push_front(self, value: int):
         self._data[self._CAPACITY - self._push_fronts] = value
@@ -61,9 +62,11 @@ class Teque:
 
 
 if __name__ == "__main__":
-    lines = sys.stdin.readlines()
-    myTeque = Teque(int(lines[0]))
-    for line in lines[1: ]:
+    line = sys.stdin.readline()
+    myTeque = Teque(int(line))
+
+    for i in range(int(line)):
+        line = sys.stdin.readline()
         command, argument = line.split(" ")
         if command == "push_back":
             myTeque.push_back(int(argument))
@@ -73,4 +76,5 @@ if __name__ == "__main__":
             myTeque.push_middle(int(argument))
         elif command == "get":
             sys.stdout.write(f"{myTeque[int(argument)]}\n")
+
 
