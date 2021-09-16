@@ -17,14 +17,12 @@ def heap_balancer(heap):
         heap_len = len(heap)
 
         for _ in range(heap_len//2):
-            l = heappop(heap)
-            heappush(left, l)
+            heappush(left, heappop(heap))
 
         sys.stdout.write(f"{heappop(heap)}\n")
 
         for _ in range(heap_len//2 - 1 + heap_len % 2):
-            r = heappop(heap)
-            heappush(right, r)
+            heappush(right, heappop(heap))
 
         heap_balancer(left)
         heap_balancer(right)
