@@ -1,5 +1,4 @@
 from __future__ import annotations
-from enum import Enum
 
 import numpy as np
 from typing import Optional, Union, List, Dict
@@ -20,6 +19,8 @@ class BinaryNode:
 
     @property
     def _role(self) -> str:
+        if self._parent == None:
+            return "root"
         return LOW if self.value < self._parent.value else HIGH
 
     @property
@@ -29,6 +30,25 @@ class BinaryNode:
     @property
     def high(self) -> Optional[BinaryNode]:
         return self._children[HIGH]
+
+    @property
+    def height(self) -> int:
+        lower = self.low.height if self.low is not None else -1
+        higher = self.high.height if self.high is not None else -1
+        return max(lower, higher) + 1
+
+    @property
+    def depth(self) -> int:
+        depth = 0
+        current = self
+        while current._parent is not None:
+            current = current._parent
+            depth += 1
+        return depth
+
+    @property
+    def _balance_factor(self) -> int:
+        return self.low.height - self.high.height
 
     @low.setter
     def low(self, value: Optional[BinaryNode]):
@@ -51,10 +71,10 @@ class BinaryNode:
     def insert(self, value: Number):
         children = self._children
         child = LOW if value < self.value else HIGH
-        if children[child] is None:
-            children[child] = BinaryNode(value, self)
-        else:
+        if children[child] is not None: 
             children[child].insert(value)
+        else:
+            children[child] = BinaryNode(value, self)
 
     def max_child(self) -> BinaryNode:
         return self if self.high is None else self.high.max_child()
@@ -68,9 +88,12 @@ class BinaryNode:
         return sorted_lower + [self.value] + sorted_higher
 
     def shortest_path(self) -> int:
-        low_shortest = -1 if self.low is None else self.low.shortest_path()
-        high_shortest = -1 if self.high is None else self.high.shortest_path()
-        return min(low_shortest, high_shortest) + 1
+        shortest = 0
+        current_row = [self]
+        while None not in current_row:
+            current_row = [current_row[i // 2].low if i % 2 == 0 else current_row[i // 2].high for i in range(2 ** shortest)]
+            shortest += 1
+        return shortest
 
     def delete(self):
         low = self.low
@@ -90,6 +113,24 @@ class BinaryNode:
             min_max = self.high.min_child()
             self.value = min_max.value
             min_max.delete()
+    
+    def left_rotate(self):
+        y = self.high
+        x = y.low
+
+        y.low = self
+        self.high = t_1
+    
+    def right_rotate(self):
+        y = self.low
+        x = y.high
+
+        y.high = self
+        self.low = t_1
+
+    def balance(self):
+        if self._balance_factor < -1:
+            if self.high.balance_
 
 
 

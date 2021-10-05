@@ -55,6 +55,9 @@ class BinarySearchTree:
         """
         root = self._find(value)
         return self._from_binary_node(root) if root is not None else None
+    
+    def height(self) -> int:
+        return self.root.height
 
 
 if __name__ == "__main__":
@@ -69,3 +72,4 @@ if __name__ == "__main__":
     print(after_deletion[99], after_deletion[100])
     bst.insert(INFINITY)
     print(bst.to_sorted_list())
+    print(bst.height())
