@@ -15,12 +15,10 @@ class Movie:
 class Actor:
     def __init__(self, name) -> None:
         self.name = name
-        self.neighbours:List[Actor] = []
-        self.ratings = DefaultDict[Actor, List[Movie]](list)
+        self.movies = DefaultDict[Actor, List[Movie]](list)
     
     def link_to(self, other: Actor, movie: Movie):
-        self.neighbours.append(other)
-        self.ratings[other].append(movie)
+        self.movies[other].append(movie)
     
 
 def read_movies(moviesTsv):
@@ -60,8 +58,18 @@ class IMDbGraph:
                 actor1.link_to(actor2, movie)
                 actor2.link_to(actor1, movie)
 
+    def count_vertices_and_edges(self) -> None:
+        v = 0
+        e = 0
+        for nm_id in self.vertices:
+            actor = self.vertices[nm_id]
+            v += 1
+            for neighbour in actor.movies.keys():
+                e += len(actor.movies[neighbour])
+        print(f"{v} \n{e // 2}")
 
 if __name__ == "__main__":
     graph = IMDbGraph("input/movies.tsv", "input/actors.tsv")
-    
+    graph.count_vertices_and_edges()
+
 
