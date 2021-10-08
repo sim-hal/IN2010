@@ -1,7 +1,5 @@
 from __future__ import annotations
-from collections import defaultdict
-from re import T
-from typing import DefaultDict, Dict, List, Tuple, Generator, DefaultDict
+from typing import DefaultDict, Dict, List, DefaultDict
 from dataclasses import dataclass
 from itertools import combinations
 
