@@ -22,13 +22,13 @@ class Actor:
     
 
 def read_movies(moviesTsv):
-    with open(moviesTsv) as moviesFile:
+    with open(moviesTsv, encoding="UTF-8") as moviesFile:
         for line in moviesFile:
             tt_id, title, rating, _ = line.strip().split("\t")
             yield tt_id, title, float(rating)
 
 def read_actors(actorsTsv):
-    with open(actorsTsv) as actorsFile:
+    with open(actorsTsv, encoding="UTF-8") as actorsFile:
         for line in actorsFile:
             nm_id, name, *tt_ids = line.strip().split("\t")
             yield nm_id, name, tt_ids
@@ -66,7 +66,11 @@ class IMDbGraph:
             v += 1
             for neighbour in actor.movies.keys():
                 e += len(actor.movies[neighbour])
-        print(f"{v} \n{e // 2}")
+        print("Oppgave 1\n")
+        print(f"Nodes: {v} \nEdges: {e // 2}")
+
+    def bfs(self, start, end):
+
 
 if __name__ == "__main__":
     graph = IMDbGraph("input/movies.tsv", "input/actors.tsv")
