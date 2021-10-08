@@ -5,12 +5,10 @@ from typing import DefaultDict, Dict, List, Tuple, Generator, DefaultDict
 from dataclasses import dataclass
 from itertools import combinations
 
-
 @dataclass
 class Movie:
     title: str
     rating: float
-
 
 class Actor:
     def __init__(self, id, name) -> None:
@@ -71,13 +69,13 @@ class IMDbGraph:
         print(f"Nodes: {v} \nEdges: {e // 2}")
 
     def bfs(self, start, end):
+        tocheck_s = [self.vertices[start].movies[key].nm_id for key in self.vertices[start].movies.keys()]
+        tocheck_e = [(end)]
         checked = set()
-
-
-        pass
+        print(tocheck_s)
 
 if __name__ == "__main__":
     graph = IMDbGraph("input/movies.tsv", "input/actors.tsv")
     graph.count_vertices_and_edges()
     glover = graph.vertices["nm2255973"]
-
+    graph.bfs("nm2255973")
