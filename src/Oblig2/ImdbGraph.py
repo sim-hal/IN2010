@@ -11,8 +11,8 @@ class Movie:
     rating: float
 
 class Actor:
-    def __init__(self, id, name) -> None:
-        self.id = id
+    def __init__(self, nm_id, name) -> None:
+        self.nm_id = nm_id
         self.name = name
         self.movies = DefaultDict[Actor, List[Movie]](list)
     
@@ -48,13 +48,13 @@ class IMDbGraph:
             for tt_id in tt_ids:
                 if tt_id not in movies:
                     continue
-                movies_to_actors[tt_id].append(actor)
+                movies_to_actors[tt_id].append(actor) ## TODO: Kan vi bytte 'actor' med nm_id her?
         
         for tt_id in movies_to_actors:
             movie = movies[tt_id]
             actors = movies_to_actors[tt_id]
             for actor1, actor2 in combinations(actors, 2):
-                actor1.link_to(actor2, movie)
+                actor1.link_to(actor2, movie)         ## TODO: Og her da? mtp det over
                 actor2.link_to(actor1, movie)
 
     def count_vertices_and_edges(self) -> None:
@@ -68,14 +68,36 @@ class IMDbGraph:
         print("Oppgave 1\n")
         print(f"Nodes: {v} \nEdges: {e // 2}")
 
-    def bfs(self, start, end):
-        tocheck_s = [self.vertices[start].movies[key].nm_id for key in self.vertices[start].movies.keys()]
-        tocheck_e = [(end)]
-        checked = set()
-        print(tocheck_s)
+    def unweighted_shortest_path(self, start, end):
+        queue_s = [start]
+        paths = {start: []}
+        visited = []
+        while end not in paths:
+            current = queue_s.pop(0)
+            for neigbour in self.vertices[current].movies.keys():
+                if neigbour.nm_id not in visited and neigbour.nm_id not in queue_s:
+                    paths[neigbour.nm_id] = paths[current].copy() + [current]
+                    queue_s.append(neigbour.nm_id)
+                    if neigbour.nm_id == end:
+                        break
+            visited.append(current)
+        final_path = paths[end].copy() + [end]
+
+        print(f"\n{self.vertices[start].name}")
+        for i, nm_id in enumerate(final_path[1:]):
+            current_actor = self.vertices[nm_id]
+            film = current_actor.movies[self.vertices[final_path[i]]][0]
+            print(f"=== [ {film.title} {film.rating} ] ===> {current_actor.name}")
+
 
 if __name__ == "__main__":
     graph = IMDbGraph("input/movies.tsv", "input/actors.tsv")
-    graph.count_vertices_and_edges()
-    glover = graph.vertices["nm2255973"]
-    graph.bfs("nm2255973")
+    #graph.count_vertices_and_edges()
+
+    print("Oppgave 2\n")
+    graph.unweighted_shortest_path("nm2255973", "nm0000460")
+    graph.unweighted_shortest_path("nm0424060", "nm0000243")
+    graph.unweighted_shortest_path("nm4689420", "nm0000365")
+    graph.unweighted_shortest_path("nm0000288", "nm0001401")
+    graph.unweighted_shortest_path("nm0031483", "nm0931324")
+
