@@ -19,9 +19,11 @@ class Actor:
     
     def link_to(self, other: Actor, movie: Movie):
         self.movies[other].append(movie)
-    
+
+
+    # TODO: Heaps fungerer ikke med actors??
     @property
-    def weight(self):
+    def sorted_movies(self):
         if self._neighbours_heapq is not None:
             return self._neighbours_heapq
         self._neighbours_heapq = []
@@ -67,13 +69,13 @@ class IMDbGraph:
             for tt_id in tt_ids:
                 if tt_id not in movies:
                     continue
-                movies_to_actors[tt_id].append(actor) ## TODO: Kan vi bytte 'actor' med nm_id her?
+                movies_to_actors[tt_id].append(actor)
         
         for tt_id in movies_to_actors:
             movie = movies[tt_id]
             actors = movies_to_actors[tt_id]
             for actor1, actor2 in combinations(actors, 2):
-                actor1.link_to(actor2, movie)         ## TODO: Og her da? mtp det over
+                actor1.link_to(actor2, movie)
                 actor2.link_to(actor1, movie)
 
     def count_vertices_and_edges(self) -> None:
@@ -89,11 +91,11 @@ class IMDbGraph:
         visited = []
         while end not in paths:
             current = queue.popleft()
-            for neigbour in current.movies.keys():
-                if neigbour not in visited and neigbour not in queue:
-                    paths[neigbour] = paths[current] + [current]
-                    queue.append(neigbour)
-                    if neigbour == end:
+            for neighbour in current.movies.keys():
+                if neighbour not in visited and neighbour not in queue:
+                    paths[neighbour] = paths[current] + [current]
+                    queue.append(neighbour)
+                    if neighbour == end:
                         break
             visited.append(current)
         final_path = paths[end] + [end]
@@ -103,21 +105,26 @@ class IMDbGraph:
             film = actor.movies[final_path[i]][0]
             print(f"=== [ {film.title} {film.rating} ] ===> {actor.name}")
 
+    # TODO: Heaps fungerer ikke med actors?? har kanskje ikke lov å ha klasser?
     def chillest_path(self, start_id: str, end_id: str):
         start = self.vertices[start_id]
         end = self.vertices[end_id]
-        queue = deque([start])
-        paths: Dict[Actor, List[Actor]] = {start: []}
-        visited = []
-        while end not in paths:
-            current = queue.popleft()
-            for neigbour in current.movies.keys():
-                if neigbour not in visited and neigbour not in queue:
-                    paths[neigbour] = paths[current] + [current]
-                    queue.append(neigbour)
-                    if neigbour == end:
-                        break
-            visited.append(current)
+        heapq = [(0, start)]
+        paths: Dict[Actor, List] = {start: [0, []], end: [float("inf"), []]}
+        print(paths[start][0], "----------")
+        while len(heapq) != 0:
+            (c_w, c_actor) = heappop(heapq)       # c is for 'current'
+            for (w, actor, movie) in c_actor.sorted_movies:
+                # If we have not seen this actor before add them to the paths and heap
+                if actor not in paths:
+                    paths[actor] = [paths[c_actor][0] + w, [paths[c_actor][1]+[c_actor]]]
+                    print(paths[actor][0])
+                    heappush(heapq, (paths[actor][0], actor))
+                # If we have seen this actor before compare them to the current path
+                elif paths[actor][0] > paths[c_actor][0] + w:
+                    paths[actor] = [paths[c_actor][0] + w, [paths[c_actor][1] + [c_actor]]]
+                    heappush(heapq, (paths[actor][0], actor))
+
         final_path = paths[end] + [end]
 
         print(f"\n{start.name}")
