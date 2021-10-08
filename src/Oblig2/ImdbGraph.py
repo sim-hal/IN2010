@@ -13,7 +13,8 @@ class Movie:
 
 
 class Actor:
-    def __init__(self, name) -> None:
+    def __init__(self, id, name) -> None:
+        self.id = id
         self.name = name
         self.movies = DefaultDict[Actor, List[Movie]](list)
     
@@ -44,7 +45,7 @@ class IMDbGraph:
         
         movies_to_actors = DefaultDict[str, List[Actor]](list)
         for nm_id, name, tt_ids in read_actors(actorsTsv):
-            actor = Actor(name)
+            actor = Actor(nm_id, name)
             self.vertices[nm_id] = actor
             for tt_id in tt_ids:
                 if tt_id not in movies:
@@ -70,10 +71,13 @@ class IMDbGraph:
         print(f"Nodes: {v} \nEdges: {e // 2}")
 
     def bfs(self, start, end):
+        checked = set()
 
+
+        pass
 
 if __name__ == "__main__":
     graph = IMDbGraph("input/movies.tsv", "input/actors.tsv")
     graph.count_vertices_and_edges()
-
+    glover = graph.vertices["nm2255973"]
 
