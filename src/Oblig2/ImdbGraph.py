@@ -64,15 +64,15 @@ class IMDbGraph:
     def unweighted_shortest_path(self, start_id: str, end_id: str):
         start = self.vertices[start_id]
         end = self.vertices[end_id]
-        queue_s = deque([start])
+        queue = deque([start])
         paths: Dict[Actor, List[Actor]] = {start: []}
         visited = []
         while end not in paths:
-            current = queue_s.popleft()
+            current = queue.popleft()
             for neigbour in current.movies.keys():
-                if neigbour not in visited and neigbour not in queue_s:
+                if neigbour not in visited and neigbour not in queue:
                     paths[neigbour] = paths[current] + [current]
-                    queue_s.append(neigbour)
+                    queue.append(neigbour)
                     if neigbour == end:
                         break
             visited.append(current)
