@@ -59,14 +59,9 @@ class IMDbGraph:
                 actor2.link_to(actor1, movie)
 
     def count_vertices_and_edges(self) -> None:
-        v = 0
-        e = 0
-        for nm_id in self.vertices:
-            actor = self.vertices[nm_id]
-            v += 1
-            for neighbour in actor.movies.keys():
-                e += len(actor.movies[neighbour])
-        print(f"{v} \n{e // 2}")
+        v = len(self.vertices)
+        e = sum(len(ms) for a in self.vertices.values() for ms in a.movies.values()) // 2
+        print(f"{v} \n{e}")
 
 if __name__ == "__main__":
     graph = IMDbGraph("input/movies.tsv", "input/actors.tsv")
