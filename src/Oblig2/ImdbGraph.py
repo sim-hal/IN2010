@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import DefaultDict, Dict, List, DefaultDict
 from dataclasses import dataclass
 from itertools import combinations
+from collections import deque
 
 @dataclass
 class Movie:
@@ -60,26 +61,27 @@ class IMDbGraph:
         e = sum(len(ms) for a in self.vertices.values() for ms in a.movies.values()) // 2
         print(f"{v} \n{e}")
 
-    def unweighted_shortest_path(self, start, end):
-        queue_s = [start]
-        paths = {start: []}
+    def unweighted_shortest_path(self, start_id: str, end_id: str):
+        start = self.vertices[start_id]
+        end = self.vertices[end_id]
+        queue_s = deque([start])
+        paths: Dict[Actor, List[Actor]] = {start: []}
         visited = []
         while end not in paths:
-            current = queue_s.pop(0)
-            for neigbour in self.vertices[current].movies.keys():
-                if neigbour.nm_id not in visited and neigbour.nm_id not in queue_s:
-                    paths[neigbour.nm_id] = paths[current].copy() + [current]
-                    queue_s.append(neigbour.nm_id)
-                    if neigbour.nm_id == end:
+            current = queue_s.popleft()
+            for neigbour in current.movies.keys():
+                if neigbour not in visited and neigbour not in queue_s:
+                    paths[neigbour] = paths[current] + [current]
+                    queue_s.append(neigbour)
+                    if neigbour == end:
                         break
             visited.append(current)
-        final_path = paths[end].copy() + [end]
+        final_path = paths[end] + [end]
 
-        print(f"\n{self.vertices[start].name}")
-        for i, nm_id in enumerate(final_path[1:]):
-            current_actor = self.vertices[nm_id]
-            film = current_actor.movies[self.vertices[final_path[i]]][0]
-            print(f"=== [ {film.title} {film.rating} ] ===> {current_actor.name}")
+        print(f"\n{start.name}")
+        for i, actor in enumerate(final_path[1:]):
+            film = actor.movies[final_path[i]][0]
+            print(f"=== [ {film.title} {film.rating} ] ===> {actor.name}")
 
 
 if __name__ == "__main__":
