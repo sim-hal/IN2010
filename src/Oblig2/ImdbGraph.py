@@ -1,8 +1,9 @@
 from __future__ import annotations
-from typing import DefaultDict, Dict, List, DefaultDict
+from typing import AsyncGenerator, DefaultDict, Dict, List, DefaultDict
 from dataclasses import dataclass
 from itertools import combinations
 from collections import deque
+from heapq import heappush, heappop
 
 @dataclass
 class Movie:
@@ -14,10 +15,28 @@ class Actor:
         self.nm_id = nm_id
         self.name = name
         self.movies = DefaultDict[Actor, List[Movie]](list)
+        self._neighbours_heapq = None
     
     def link_to(self, other: Actor, movie: Movie):
         self.movies[other].append(movie)
     
+    @property
+    def weight(self):
+        if self._neighbours_heapq is not None:
+            return self._neighbours_heapq
+        self._neighbours_heapq = []
+
+        for actor in self.movies: 
+            if len(self.movies[actor]) == 1:
+                heappush(self._neighbours_heapq, (10-self.movies[actor][0].rating, actor, self.movies[actor][0]))
+            else:
+                best = self.movies[actor][0]
+                for movie in self.movies[actor][1:]:
+                    if movie.rating > best.rating:
+                        best = movie
+                heappush(self._neighbours_heapq, (10-best.rating, actor, best))
+        
+        return self._neighbours_heapq
 
 def read_movies(moviesTsv):
     with open(moviesTsv, encoding="UTF-8") as moviesFile:
@@ -30,6 +49,7 @@ def read_actors(actorsTsv):
         for line in actorsFile:
             nm_id, name, *tt_ids = line.strip().split("\t")
             yield nm_id, name, tt_ids
+
 
 
 class IMDbGraph:
@@ -62,6 +82,28 @@ class IMDbGraph:
         print(f"{v} \n{e}")
 
     def unweighted_shortest_path(self, start_id: str, end_id: str):
+        start = self.vertices[start_id]
+        end = self.vertices[end_id]
+        queue = deque([start])
+        paths: Dict[Actor, List[Actor]] = {start: []}
+        visited = []
+        while end not in paths:
+            current = queue.popleft()
+            for neigbour in current.movies.keys():
+                if neigbour not in visited and neigbour not in queue:
+                    paths[neigbour] = paths[current] + [current]
+                    queue.append(neigbour)
+                    if neigbour == end:
+                        break
+            visited.append(current)
+        final_path = paths[end] + [end]
+
+        print(f"\n{start.name}")
+        for i, actor in enumerate(final_path[1:]):
+            film = actor.movies[final_path[i]][0]
+            print(f"=== [ {film.title} {film.rating} ] ===> {actor.name}")
+
+    def chillest_path(self, start_id: str, end_id: str):
         start = self.vertices[start_id]
         end = self.vertices[end_id]
         queue = deque([start])
