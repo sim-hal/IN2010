@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import AsyncGenerator, DefaultDict, Dict, List, DefaultDict
+from typing import AsyncGenerator, DefaultDict, Dict, List
 from dataclasses import dataclass
 from itertools import combinations
 from collections import deque
@@ -20,8 +20,14 @@ class Actor:
     def link_to(self, other: Actor, movie: Movie):
         self.movies[other].append(movie)
 
+    def __lt__(self, other):
+        #pass?
+        return True
+    
+    #def __le__(self, other): 
 
-    # TODO: Heaps fungerer ikke med actors??
+    # TODO: Tror vi kan pushe actor (klasse) til heap, problemet er bare når to rating er like vil den gå videre i
+    # tuplet og sammenlikne actor med actor. Tror det kan fikses med å sette < til def __lt__ i actor
     @property
     def sorted_movies(self):
         if self._neighbours_heapq is not None:
@@ -105,20 +111,20 @@ class IMDbGraph:
             film = actor.movies[final_path[i]][0]
             print(f"=== [ {film.title} {film.rating} ] ===> {actor.name}")
 
-    # TODO: Heaps fungerer ikke med actors?? har kanskje ikke lov å ha klasser?
+    # TODO: Se over på sorted_movies.  
     def chillest_path(self, start_id: str, end_id: str):
         start = self.vertices[start_id]
         end = self.vertices[end_id]
         heapq = [(0, start)]
         paths: Dict[Actor, List] = {start: [0, []], end: [float("inf"), []]}
-        print(paths[start][0], "----------")
+        #print(paths[start][0], "----------")
         while len(heapq) != 0:
             (c_w, c_actor) = heappop(heapq)       # c is for 'current'
-            for (w, actor, movie) in c_actor.sorted_movies:
+            for (w, actor, movie) in c_actor.sorted_movies:  #føkker actor seg opp her? Er ikke et Actor objekt lenger men et list object
                 # If we have not seen this actor before add them to the paths and heap
                 if actor not in paths:
                     paths[actor] = [paths[c_actor][0] + w, [paths[c_actor][1]+[c_actor]]]
-                    print(paths[actor][0])
+                    #print(paths[actor][0])
                     heappush(heapq, (paths[actor][0], actor))
                 # If we have seen this actor before compare them to the current path
                 elif paths[actor][0] > paths[c_actor][0] + w:
@@ -138,9 +144,15 @@ if __name__ == "__main__":
     #graph.count_vertices_and_edges()
 
     print("Oppgave 2\n")
-    graph.unweighted_shortest_path("nm2255973", "nm0000460")
-    graph.unweighted_shortest_path("nm0424060", "nm0000243")
-    graph.unweighted_shortest_path("nm4689420", "nm0000365")
-    graph.unweighted_shortest_path("nm0000288", "nm0001401")
-    graph.unweighted_shortest_path("nm0031483", "nm0931324")
+    # graph.unweighted_shortest_path("nm2255973", "nm0000460")
+    # graph.unweighted_shortest_path("nm0424060", "nm0000243")
+    # graph.unweighted_shortest_path("nm4689420", "nm0000365")
+    # graph.unweighted_shortest_path("nm0000288", "nm0001401")
+    # graph.unweighted_shortest_path("nm0031483", "nm0931324")
+
+    print("Oppgave 3\n")
+    graph.chillest_path("nm0031483", "nm0931324")
+
+
+
 
