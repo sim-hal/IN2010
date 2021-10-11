@@ -28,8 +28,6 @@ class Actor:
     def __lt__(self, other):
         return self.name < other.name 
 
-    # TODO: Tror vi kan pushe actor (klasse) til heap, problemet er bare når to rating er like vil den gå videre i
-    # tuplet og sammenlikne actor med actor. Tror det kan fikses med å sette < til def __lt__ i actor
     @property
     def sorted_movies(self) -> List[Tuple[float, Actor, Movie]]:
         if self._neighbours_heapq is not None:
@@ -61,7 +59,6 @@ def read_actors(actorsTsv):
             yield nm_id, name, tt_ids
 
 
-
 class IMDbGraph:
     def __init__(self, moviesTsv: str, actorsTsv: str) -> None:
         movies: Dict[str, Movie] = {}
@@ -89,7 +86,7 @@ class IMDbGraph:
     def count_vertices_and_edges(self) -> None:
         v = len(self.vertices)
         e = sum(len(ms) for a in self.vertices.values() for ms in a.movies.values()) // 2
-        print(f"{v} \n{e}")
+        print(f"Oppgave 1\n\n{v} \n{e}\n")
 
     def unweighted_shortest_path(self, start_id: str, end_id: str):
         start = self.vertices[start_id]
@@ -113,13 +110,11 @@ class IMDbGraph:
             film = actor.movies[final_path[i]][0]
             print(f"=== [ {film.title} {film.rating} ] ===> {actor.name}")
 
-    # TODO: Se over på sorted_movies.  
     def chillest_path(self, start_id: str, end_id: str):
         start = self.vertices[start_id]
         end = self.vertices[end_id]
         heapq: List[Tuple[float, Actor]] = [(0, start)]
         paths: Dict[Actor, Path] = {start: Path(0, []), end: Path(float("inf"), [])}
-        #print(paths[start][0], "----------")
         while len(heapq) != 0:
             (c_w, c_actor) = heappop(heapq)
             for (w, actor, movie) in c_actor.sorted_movies: 
@@ -140,10 +135,43 @@ class IMDbGraph:
             film = actor.movies[final_path[i]][0]
             print(f"=== [ {film.title} {film.rating} ] ===> {actor.name}")
 
+    def component_dfs(self):
+        v_count = len(self.vertices)
+        visited: List[Actor] = []
+        unvisited: List[str] = list(self.vertices.keys())
+        component_sizes = {}
+        while len(visited) < v_count:
+            count = len(visited)
+            current = self.vertices[unvisited.pop()]
+            stack = [current]
+            while len(stack) != 0:
+                current = stack[-1]
+                for neighbour in current.movies:
+                    if neighbour not in visited:
+                        stack.append(neighbour)
+                        break
+                if current == stack[-1]:
+                    stack.pop()
+                if current not in visited:
+                    visited.append(current)
+
+            component_size = len(visited) - count
+            if component_size not in component_sizes:
+                component_sizes[component_size] = 1
+            else:
+                component_sizes[component_size] += 1
+
+            unvisited = list(set(unvisited)-set(visited))
+
+        c_s = sorted(component_sizes)
+
+        for c in c_s:
+            print(f"There are {c[0]} components of size {c[1]}")
+
 
 if __name__ == "__main__":
     graph = IMDbGraph("input/movies.tsv", "input/actors.tsv")
-    #graph.count_vertices_and_edges()
+    graph.count_vertices_and_edges()
 
     print("Oppgave 2\n")
     # graph.unweighted_shortest_path("nm2255973", "nm0000460")
@@ -153,8 +181,8 @@ if __name__ == "__main__":
     # graph.unweighted_shortest_path("nm0031483", "nm0931324")
 
     print("Oppgave 3\n")
-    graph.chillest_path("nm0031483", "nm0931324")
+    #graph.chillest_path("nm0031483", "nm0931324")
 
-
+    graph.component_dfs()
 
 
