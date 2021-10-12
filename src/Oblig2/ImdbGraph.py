@@ -137,14 +137,14 @@ class IMDbGraph:
 
     def component_dfs(self):
         v_count = len(self.vertices)
-        visited: List[Actor] = []
-        unvisited: List[str] = list(self.vertices.keys())
+        visited = set()
+        unvisited = set(self.vertices.keys())
         component_sizes = {}
         while len(visited) < v_count:
             count = len(visited)
             current = self.vertices[unvisited.pop()]
             stack = [current]
-            while len(stack) != 0:
+            while len(stack) > 0:       # TODO: Denne stopper ikke på min PC selv om len(stack) = 0 ?? -Severin
                 current = stack[-1]
                 for neighbour in current.movies:
                     if neighbour not in visited:
@@ -153,7 +153,8 @@ class IMDbGraph:
                 if current == stack[-1]:
                     stack.pop()
                 if current not in visited:
-                    visited.append(current)
+                    visited.add(current)
+                print(f"Visited: {len(visited)}, stack: {len(stack)}")
 
             component_size = len(visited) - count
             if component_size not in component_sizes:
@@ -161,7 +162,7 @@ class IMDbGraph:
             else:
                 component_sizes[component_size] += 1
 
-            unvisited = list(set(unvisited)-set(visited))
+            unvisited = unvisited - visited
 
         c_s = sorted(component_sizes)
 
@@ -183,6 +184,7 @@ if __name__ == "__main__":
     print("Oppgave 3\n")
     #graph.chillest_path("nm0031483", "nm0931324")
 
+    print("Opggave 4\n")
     graph.component_dfs()
 
 
