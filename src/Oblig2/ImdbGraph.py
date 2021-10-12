@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import AsyncGenerator, DefaultDict, Dict, List, Tuple
+from typing import AsyncGenerator, DefaultDict, Dict, List, Tuple, Set
 from dataclasses import dataclass
 from itertools import combinations
 from collections import deque
@@ -137,24 +137,24 @@ class IMDbGraph:
 
     def component_dfs(self):
         v_count = len(self.vertices)
-        visited = set()
-        unvisited = set(self.vertices.keys())
+        visited: Set[Actor] = set()
+        unvisited: Set[str] = set(self.vertices.keys())
         component_sizes = {}
         while len(visited) < v_count:
             count = len(visited)
             current = self.vertices[unvisited.pop()]
-            stack = [current]
-            while len(stack) > 0:       # TODO: Denne stopper ikke på min PC selv om len(stack) = 0 ?? -Severin
+            stack: List[Actor] = [current]
+
+            while len(stack) != 0:
                 current = stack[-1]
                 for neighbour in current.movies:
-                    if neighbour not in visited:
+                    if neighbour.nm_id not in visited:
                         stack.append(neighbour)
                         break
                 if current == stack[-1]:
                     stack.pop()
-                if current not in visited:
-                    visited.add(current)
-                print(f"Visited: {len(visited)}, stack: {len(stack)}")
+                if current.nm_id not in visited:
+                    visited.add(current.nm_id)
 
             component_size = len(visited) - count
             if component_size not in component_sizes:
@@ -164,10 +164,9 @@ class IMDbGraph:
 
             unvisited = unvisited - visited
 
-        c_s = sorted(component_sizes)
-
-        for c in c_s:
-            print(f"There are {c[0]} components of size {c[1]}")
+        # TODO: Nice way to print them in order?
+        for size in component_sizes:
+            print(f"There are {component_sizes[size]} components of size {size}")
 
 
 if __name__ == "__main__":
