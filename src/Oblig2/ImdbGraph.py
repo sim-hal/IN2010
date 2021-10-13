@@ -16,7 +16,7 @@ class Path:
     nodes: List[Actor]
     edges: List[Movie]
     
-    def __iter__(self, ):
+    def __iter__(self):
         self.n = 0
         return self
 
@@ -143,7 +143,7 @@ class IMDbGraph:
         while heapq:
             (c_w, c_actor) = heappop(heapq)
             for (w, actor, movie) in c_actor.sorted_movies: 
-                if paths[actor].cost > paths[c_actor].cost + w:
+                if paths[actor].cost > paths[c_actor].cost + w and paths[c_actor].cost + w < paths[end].cost:
                     c_path = paths[c_actor]
                     paths[actor] = c_path.pure_append(c_actor, movie, w)
                     heappush(heapq, (paths[actor].cost, actor))
@@ -196,9 +196,11 @@ if __name__ == "__main__":
     graph.unweighted_shortest_path("nm0031483", "nm0931324")
 
     print("Oppgave 3\n")
+    graph.chillest_path("nm2255973", "nm0000460")
+    graph.chillest_path("nm0424060", "nm0000243")
+    graph.chillest_path("nm4689420", "nm0000365")
+    graph.chillest_path("nm0000288", "nm0001401")
     graph.chillest_path("nm0031483", "nm0931324")
 
     print("Opggave 4\n")
     graph.component_dfs()
-
-
