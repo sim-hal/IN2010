@@ -5,7 +5,6 @@ from itertools import combinations
 from collections import deque
 from heapq import heappush, heappop
 
-
 @dataclass
 class Movie:
     title: str
@@ -17,7 +16,7 @@ class Path:
     nodes: List[Actor]
     edges: List[Movie]
     
-    def __iter__(self, ):
+    def __iter__(self):
         self.n = 0
         return self
 
@@ -32,15 +31,13 @@ class Path:
     
     def pure_append(self, node: Actor, edge: Movie) -> Path:
         return Path(self.nodes + [node], self.edges + [edge])
-
-
+    
 @dataclass
 class WeightedPath(Path):
     cost: float
     
     def pure_append(self, node: Actor, edge: Movie, cost: float) -> WeightedPath:
         return WeightedPath(self.nodes + [node], self.edges + [edge], self.cost + cost)
-
 
 class Actor:
     def __init__(self, nm_id, name) -> None:
@@ -58,7 +55,8 @@ class Actor:
     @property
     def sorted_movies(self) -> List[Tuple[float, Actor, Movie]]:
         return self._neighbours_heapq if self._neighbours_heapq is not None else self._fill_neighbours_heapq()
-
+    
+    
     def _fill_neighbours_heapq(self) -> List[Tuple[float, Actor, Movie]]:
         self._neighbours_heapq = []
 
@@ -113,7 +111,7 @@ class IMDbGraph:
     def count_vertices_and_edges(self) -> None:
         v = len(self.vertices)
         e = sum(len(ms) for a in self.vertices.values() for ms in a.movies.values()) // 2
-        print(f"Vertices: {v} \nEdges:    {e}\n")
+        print(f"{v} \n{e}\n")
 
     def unweighted_shortest_path(self, start_id: str, end_id: str):
         start = self.vertices[start_id]
@@ -145,7 +143,7 @@ class IMDbGraph:
         while heapq:
             (c_w, c_actor) = heappop(heapq)
             for (w, actor, movie) in c_actor.sorted_movies: 
-                if paths[actor].cost > paths[c_actor].cost + w:
+                if paths[actor].cost > paths[c_actor].cost + w and paths[c_actor].cost + w < paths[end].cost:
                     c_path = paths[c_actor]
                     paths[actor] = c_path.pure_append(c_actor, movie, w)
                     heappush(heapq, (paths[actor].cost, actor))
@@ -155,7 +153,7 @@ class IMDbGraph:
         print(f"\n{start.name}")
         for actor, movie in final_path:
             print(f"=== [ {movie.title} {movie.rating} ] ===> {actor.name}")
-        print(f"Total cost: {final_path.cost :.1f}\n")
+        print(f"Total cost: {final_path.cost :1f}")
 
     def component_dfs(self):
         v_count = len(self.vertices)
@@ -197,7 +195,7 @@ if __name__ == "__main__":
     graph.unweighted_shortest_path("nm0000288", "nm0001401")
     graph.unweighted_shortest_path("nm0031483", "nm0931324")
 
-    print("\nOppgave 3\n")
+    print("Oppgave 3\n")
     graph.chillest_path("nm2255973", "nm0000460")
     graph.chillest_path("nm0424060", "nm0000243")
     graph.chillest_path("nm4689420", "nm0000365")
