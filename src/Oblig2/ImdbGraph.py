@@ -5,6 +5,7 @@ from itertools import combinations
 from collections import deque
 from heapq import heappush, heappop
 
+
 @dataclass
 class Movie:
     title: str
@@ -31,13 +32,15 @@ class Path:
     
     def pure_append(self, node: Actor, edge: Movie) -> Path:
         return Path(self.nodes + [node], self.edges + [edge])
-    
+
+
 @dataclass
 class WeightedPath(Path):
     cost: float
     
     def pure_append(self, node: Actor, edge: Movie, cost: float) -> WeightedPath:
         return WeightedPath(self.nodes + [node], self.edges + [edge], self.cost + cost)
+
 
 class Actor:
     def __init__(self, nm_id, name) -> None:
@@ -55,8 +58,7 @@ class Actor:
     @property
     def sorted_movies(self) -> List[Tuple[float, Actor, Movie]]:
         return self._neighbours_heapq if self._neighbours_heapq is not None else self._fill_neighbours_heapq()
-    
-    
+
     def _fill_neighbours_heapq(self) -> List[Tuple[float, Actor, Movie]]:
         self._neighbours_heapq = []
 
@@ -111,7 +113,7 @@ class IMDbGraph:
     def count_vertices_and_edges(self) -> None:
         v = len(self.vertices)
         e = sum(len(ms) for a in self.vertices.values() for ms in a.movies.values()) // 2
-        print(f"{v} \n{e}\n")
+        print(f"Vertices: {v} \nEdges:    {e}\n")
 
     def unweighted_shortest_path(self, start_id: str, end_id: str):
         start = self.vertices[start_id]
@@ -153,7 +155,7 @@ class IMDbGraph:
         print(f"\n{start.name}")
         for actor, movie in final_path:
             print(f"=== [ {movie.title} {movie.rating} ] ===> {actor.name}")
-        print(f"Total cost: {final_path.cost :1f}")
+        print(f"Total cost: {final_path.cost :.1f}\n")
 
     def component_dfs(self):
         v_count = len(self.vertices)
@@ -195,10 +197,12 @@ if __name__ == "__main__":
     graph.unweighted_shortest_path("nm0000288", "nm0001401")
     graph.unweighted_shortest_path("nm0031483", "nm0931324")
 
-    print("Oppgave 3\n")
+    print("\nOppgave 3\n")
+    graph.chillest_path("nm2255973", "nm0000460")
+    graph.chillest_path("nm0424060", "nm0000243")
+    graph.chillest_path("nm4689420", "nm0000365")
+    graph.chillest_path("nm0000288", "nm0001401")
     graph.chillest_path("nm0031483", "nm0931324")
 
     print("Opggave 4\n")
     graph.component_dfs()
-
-
