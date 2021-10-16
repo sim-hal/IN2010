@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import DefaultDict, Dict, List, Tuple, Set, Optional
+from typing import DefaultDict, Deque, Dict, List, Tuple, Set, Optional
 from dataclasses import dataclass
 from itertools import combinations
 from collections import deque
@@ -167,7 +167,8 @@ class IMDbGraph:
         while len(visited) < v_count:
             count = len(visited)
             current = self.vertices[unvisited.pop()]
-            stack: List[Actor] = [current]
+            stack = Deque[Actor]()
+            stack.append(current)
             while stack:
                 current = stack[-1]
                 for neighbour in current.movies:
