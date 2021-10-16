@@ -48,8 +48,7 @@ class WeightedPath(Path):
         return WeightedPath(self.nodes + [node], self.edges + [edge], self.cost + cost)
 
 class Actor:
-    def __init__(self, nm_id, name) -> None:
-        self.nm_id = nm_id
+    def __init__(self, name) -> None:
         self.name = name
         self.movies = DefaultDict[Actor, List[Movie]](list)
         self._optimal_edges: Optional[List[Tuple[Actor, Movie]]] = None
@@ -96,7 +95,7 @@ class IMDbGraph:
         
         movies_to_actors = DefaultDict[str, List[Actor]](list)
         for nm_id, name, tt_ids in read_actors(actorsTsv):
-            actor = Actor(nm_id, name)
+            actor = Actor(name)
             self.vertices[nm_id] = actor
             for tt_id in tt_ids:
                 if tt_id not in movies:
@@ -162,23 +161,23 @@ class IMDbGraph:
     def component_dfs(self):
         v_count = len(self.vertices)
         visited: Set[Actor] = set()
-        unvisited: Set[str] = set(self.vertices.keys())
+        unvisited: Set[Actor] = set(self.vertices.values())
         component_sizes = DefaultDict[int, int](int)
         while len(visited) < v_count:
             count = len(visited)
-            current = self.vertices[unvisited.pop()]
+            current = unvisited.pop()
             stack = Deque[Actor]()
             stack.append(current)
             while stack:
                 current = stack[-1]
                 for neighbour in current.movies:
-                    if neighbour.nm_id not in visited:
+                    if neighbour not in visited:
                         stack.append(neighbour)
                         break
                 if current == stack[-1]:
                     stack.pop()
-                if current.nm_id not in visited:
-                    visited.add(current.nm_id)
+                if current not in visited:
+                    visited.add(current)
 
             component_size = len(visited) - count
             component_sizes[component_size] += 1
