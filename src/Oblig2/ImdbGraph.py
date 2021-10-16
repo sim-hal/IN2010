@@ -44,7 +44,7 @@ class Actor:
         self.nm_id = nm_id
         self.name = name
         self.movies = DefaultDict[Actor, List[Movie]](list)
-        self._neighbours_heapq: Optional[List[Tuple[float, Actor, Movie]]] = None
+        self._optimal_edges: Optional[List[Tuple[float, Actor, Movie]]] = None
     
     def link_to(self, other: Actor, movie: Movie):
         self.movies[other].append(movie)
@@ -53,23 +53,23 @@ class Actor:
         return self.name < other.name 
 
     @property
-    def sorted_movies(self) -> List[Tuple[float, Actor, Movie]]:
-        return self._neighbours_heapq if self._neighbours_heapq is not None else self._fill_neighbours_heapq()
+    def optimal_edges(self) -> List[Tuple[float, Actor, Movie]]:
+        return self._optimal_edges if self._optimal_edges is not None else self._fill_neighbours_heapq()
     
     
     def _fill_neighbours_heapq(self) -> List[Tuple[float, Actor, Movie]]:
-        self._neighbours_heapq = []
+        self._optimal_edges = []
 
         for actor in self.movies: 
             if len(self.movies[actor]) == 1:
-                self._neighbours_heapq.append((10-self.movies[actor][0].rating, actor, self.movies[actor][0]))
+                self.optimal_edges.append((10-self.movies[actor][0].rating, actor, self.movies[actor][0]))
             else:
                 best = self.movies[actor][0]
                 for movie in self.movies[actor][1:]:
                     if movie.rating > best.rating:
                         best = movie
-                self._neighbours_heapq.append((10-best.rating, actor, best))
-        return self._neighbours_heapq
+                self._optimal_edges.append((10-best.rating, actor, best))
+        return self._optimal_edges
 
 def read_movies(moviesTsv):
     with open(moviesTsv, encoding="UTF-8") as moviesFile:
@@ -142,7 +142,7 @@ class IMDbGraph:
         paths[start] = WeightedPath([], [], 0)
         while heapq:
             (c_w, c_actor) = heappop(heapq)
-            for (w, actor, movie) in c_actor.sorted_movies: 
+            for (w, actor, movie) in c_actor.optimal_edges: 
                 if paths[actor].cost > paths[c_actor].cost + w and paths[c_actor].cost + w < paths[end].cost:
                     c_path = paths[c_actor]
                     paths[actor] = c_path.pure_append(c_actor, movie, w)
