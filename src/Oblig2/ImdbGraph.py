@@ -62,10 +62,10 @@ class Actor:
 
     @property
     def optimal_edges(self) -> List[Tuple[Actor, Movie]]:
-        return self._optimal_edges if self._optimal_edges is not None else self._fill_neighbours_heapq()
+        return self._optimal_edges if self._optimal_edges is not None else self._fill_optimal_edges()
     
     
-    def _fill_neighbours_heapq(self) -> List[Tuple[Actor, Movie]]:
+    def _fill_optimal_edges(self) -> List[Tuple[Actor, Movie]]:
         self._optimal_edges = []
         for actor in self.movies: 
             self._optimal_edges.append((actor, max(self.movies[actor])))
