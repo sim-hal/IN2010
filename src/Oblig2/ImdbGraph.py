@@ -111,7 +111,7 @@ class IMDbGraph:
     def count_vertices_and_edges(self) -> None:
         v = len(self.vertices)
         e = sum(len(ms) for a in self.vertices.values() for ms in a.movies.values()) // 2
-        print(f"{v} \n{e}\n")
+        print(f"Vertices: {v} \nEdges:    {e}\n")
 
     def unweighted_shortest_path(self, start_id: str, end_id: str):
         start = self.vertices[start_id]
