@@ -62,13 +62,13 @@ class Actor:
 
         for actor in self.movies: 
             if len(self.movies[actor]) == 1:
-                heappush(self._neighbours_heapq, (10-self.movies[actor][0].rating, actor, self.movies[actor][0]))
+                self._neighbours_heapq.append((10-self.movies[actor][0].rating, actor, self.movies[actor][0]))
             else:
                 best = self.movies[actor][0]
                 for movie in self.movies[actor][1:]:
                     if movie.rating > best.rating:
                         best = movie
-                heappush(self._neighbours_heapq, (10-best.rating, actor, best))
+                self._neighbours_heapq.append((10-best.rating, actor, best))
         return self._neighbours_heapq
 
 def read_movies(moviesTsv):
@@ -154,6 +154,7 @@ class IMDbGraph:
         for actor, movie in final_path:
             print(f"=== [ {movie.title} {movie.rating} ] ===> {actor.name}")
         print(f"Total cost: {final_path.cost :1f}")
+
 
     def component_dfs(self):
         v_count = len(self.vertices)
