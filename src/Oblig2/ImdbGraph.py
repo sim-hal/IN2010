@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from itertools import combinations
 from collections import deque
 from heapq import heappush, heappop
+from csv import reader
 
 @dataclass
 class Movie:
@@ -73,14 +74,16 @@ class Actor:
 
 def read_movies(moviesTsv):
     with open(moviesTsv, encoding="UTF-8") as moviesFile:
-        for line in moviesFile:
-            tt_id, title, rating, _ = line.strip().split("\t")
+        tsv_reader = reader(moviesFile, delimiter='\t')
+        for line in tsv_reader:
+            tt_id, title, rating, _ = line
             yield tt_id, title, float(rating)
 
 def read_actors(actorsTsv):
     with open(actorsTsv, encoding="UTF-8") as actorsFile:
-        for line in actorsFile:
-            nm_id, name, *tt_ids = line.strip().split("\t")
+        tsv_reader = reader(actorsFile, delimiter='\t')
+        for line in tsv_reader:
+            nm_id, name, *tt_ids = line
             yield nm_id, name, tt_ids
 
 
