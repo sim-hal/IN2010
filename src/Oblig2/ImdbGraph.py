@@ -180,7 +180,7 @@ class IMDbGraph:
 
             component_size = len(visited) - count
             component_sizes[component_size] += 1
-            unvisited = unvisited - visited
+            unvisited -= visited
 
         for size in sorted(component_sizes):
             print(f"There are {component_sizes[size]} components of size {size}")
