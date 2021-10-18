@@ -159,11 +159,10 @@ class IMDbGraph:
 
 
     def component_dfs(self):
-        v_count = len(self.vertices)
         visited: Set[Actor] = set()
         unvisited: Set[Actor] = set(self.vertices.values())
         component_sizes = DefaultDict[int, int](int)
-        while len(visited) < v_count:
+        while unvisited:
             count = len(visited)
             current = unvisited.pop()
             stack = Deque[Actor]()
