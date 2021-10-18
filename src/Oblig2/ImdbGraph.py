@@ -66,7 +66,7 @@ class Actor:
     
     def _fill_optimal_edges(self) -> List[Tuple[Actor, Movie]]:
         self._optimal_edges = []
-        for actor in self.movies: 
+        for actor in self.movies:
             self._optimal_edges.append((actor, max(self.movies[actor])))
         return self._optimal_edges
 
@@ -119,16 +119,16 @@ class IMDbGraph:
         end = self.vertices[end_id]
         queue = deque([start])
         paths: Dict[Actor, Path] = {start: Path([], [])}
-        visited = []
+        visited = set()
         while end not in paths:
             current = queue.popleft()
-            for neighbour in current.movies.keys():
-                if neighbour not in visited and neighbour not in queue:
+            for neighbour in current.movies:
+                if neighbour not in visited:
                     paths[neighbour] = paths[current].pure_append(current, current.movies[neighbour][0])
                     queue.append(neighbour)
+                    visited.add(neighbour)
                     if neighbour == end:
                         break
-            visited.append(current)
         final_path = Path(paths[end].nodes + [end], paths[end].edges)
 
         print(f"\n{start.name}")
