@@ -42,6 +42,5 @@ def quicksort(A, low: int, high: int):
 
 
 def sort(A):
-    print("IN QUICKSORT")
     quicksort(A, 0, len(A)-1)
     return A
