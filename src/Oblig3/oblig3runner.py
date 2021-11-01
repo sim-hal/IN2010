@@ -3,14 +3,15 @@ from countswaps import CountSwaps
 import insertion
 import quick
 import math
+import heap
 import time
 
 # The student can adjust these parameters to conduct their experiments
 
 # Put the sorting algorithms under test for part 1 here
-ALGS1 = [insertion.sort, quick.sort]
+ALGS1 = [insertion.sort, quick.sort, heap.sort]
 # Put the sorting algorithms under test for part 2 here
-ALGS2 = [insertion.sort, quick.sort]
+ALGS2 = [insertion.sort, quick.sort, heap.sort]
 # Time limit for a single sorting in milliseconds
 TIME_LIMIT_MS = 100;
 # How much n grows each iteration for part 2
