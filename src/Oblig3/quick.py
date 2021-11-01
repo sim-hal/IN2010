@@ -1,5 +1,8 @@
+import typing
+from countswaps import CountSwaps
 
-def choose_pivot(A, low, high):
+
+def choose_pivot(A: CountSwaps, low: int, high: int):
     if A[low] > A[len(A)//2]:
         if A[low] < A[high]:
             return low
@@ -16,7 +19,7 @@ def choose_pivot(A, low, high):
             return high
 
 
-def partition(A, low, high):
+def partition(A: CountSwaps, low: int, high: int):
     p = choose_pivot(A, low, high)
     A.swap(p, low)
     pivot = A[low]
@@ -33,7 +36,8 @@ def partition(A, low, high):
     A.swap(low, right)
     return right
 
-def quicksort(A, low: int, high: int):
+
+def quicksort(A: CountSwaps, low: int, high: int):
     if low >= high:
         return
     p = partition(A, low, high)
@@ -41,6 +45,6 @@ def quicksort(A, low: int, high: int):
     quicksort(A, p+1, high)
 
 
-def sort(A):
+def sort(A: CountSwaps):
     quicksort(A, 0, len(A)-1)
     return A
