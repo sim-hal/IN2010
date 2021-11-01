@@ -4,17 +4,18 @@ import insertion
 import quick
 import math
 import time
+import selection
 
 # The student can adjust these parameters to conduct their experiments
 
 # Put the sorting algorithms under test for part 1 here
-ALGS1 = [insertion.sort, quick.sort]
+ALGS1 = [insertion.sort, quick.sort, selection.sort]
 # Put the sorting algorithms under test for part 2 here
-ALGS2 = [insertion.sort, quick.sort]
+ALGS2 = [insertion.sort, quick.sort, selection.sort]
 # Time limit for a single sorting in milliseconds
-TIME_LIMIT_MS = 100;
+TIME_LIMIT_MS = 100
 # How much n grows each iteration for part 2
-INCREMENT = 1;
+INCREMENT = 1
 
 
 # We use the module as name for the algorithm
