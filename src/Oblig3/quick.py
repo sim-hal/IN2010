@@ -3,18 +3,19 @@ from countswaps import CountSwaps
 
 
 def choose_pivot(A: CountSwaps, low: int, high: int):
-    if A[low] > A[len(A)//2]:
+    mid = (low + high) // 2
+    if A[mid] < A[low]:
         if A[low] < A[high]:
             return low
-        elif A[len(A)//2] > A[high]:
-            return len(A)//2
+        elif A[high] < A[mid]:
+            return mid
         else:
             return high
     else:
-        if A[low] > A[high]:
+        if A[high] < A[low] :
             return low
-        elif A[len(A)//2] < A[high]:
-            return len(A)//2
+        elif A[mid] < A[high]:
+            return mid
         else:
             return high
 
