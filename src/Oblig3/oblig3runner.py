@@ -33,6 +33,11 @@ def run_algs_part1(A, infilename):
         outstr = '\n'.join(map(str, alg(countA)))
         with open(outfilename, 'w') as f:
             f.write(outstr)
+        if alg != ALGS1[0]:
+            if outstr != prevstr:
+                name = algname(alg)
+                raise ValueError("The algorithms do not produce the same results, likely error in {}".format(name))
+        prevstr = outstr
 
 
 # Generate the header for the given sorting algorithm
