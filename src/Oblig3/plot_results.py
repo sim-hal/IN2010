@@ -35,7 +35,7 @@ def plot_results(filename: str, title: str = ""):
     axs[0].plot(n, n**2, label=r"$O(n^2)$")
     axs[0].plot(n, n*np.log(n), label=r"$O(nlog(n))$")
 
-    axs[0].set_ylim(-10000, ymax+10000)
+    axs[0].set_ylim(-0.1*ymax, ymax+0.1*ymax)
     axs[0].set_title("Time")
     axs[1].set_title("Comparisons")
     axs[2].set_title("Swaps")
@@ -48,12 +48,12 @@ def plot_results(filename: str, title: str = ""):
     fig.legend(bbox_to_anchor=(0.98,0.85), loc="upper right")
 
     fig.suptitle(title)
-    filename = filename.split("/")[1].split(".")[0]+".png"
+    filename = "plots/" + filename.split("/")[1].split(".")[0]+".png"
     fig.tight_layout()
     plt.savefig(filename)
     plt.show()
 
 
 if __name__ == "__main__":
-    plot_results("inputs/nearly_sorted_10000_results.csv", "Input: Random 10000")
+    plot_results("inputs/nearly_sorted_100_results.csv", "Input: Nearly sorted 100")
 
