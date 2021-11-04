@@ -47,11 +47,13 @@ def plot_results(filename: str, title: str = ""):
 
     fig.legend(bbox_to_anchor=(0.98,0.85), loc="upper right")
 
+    if title == "":
+        title = "Input: " + " ".join(filename.split("/")[1].split("_")[:-1])
+
     fig.suptitle(title)
     filename = "plots/" + filename.split("/")[1].split(".")[0]+".png"
     fig.tight_layout()
     plt.savefig(filename)
-    plt.show()
 
 
 if __name__ == "__main__":
