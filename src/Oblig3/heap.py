@@ -1,5 +1,6 @@
 from countswaps import CountSwaps
 
+
 def bubble_down(A: CountSwaps, i: int, n: int):
     gr = i
     left = 2 * gr + 1
@@ -15,7 +16,7 @@ def bubble_down(A: CountSwaps, i: int, n: int):
 
 def build_heap(A: CountSwaps):
     n = len(A)
-    for i in range(n // 2, 0, -1):
+    for i in range(n // 2, -1, -1):
         bubble_down(A, i, n)    
     return A  
 
@@ -29,7 +30,6 @@ def heap_sort(A: CountSwaps) -> CountSwaps:
         A.swap(0, i)
         bubble_down(A, 0, i)
     return A
-
 
 
 def sort(A: CountSwaps) -> CountSwaps:
